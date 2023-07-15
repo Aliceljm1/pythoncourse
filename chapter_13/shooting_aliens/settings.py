@@ -1,3 +1,11 @@
+'''
+任务
+1.修改外星人飞船和攻击飞船移动的速度
+2.修改子弹的速度
+3.修改飞船，外星人的图片，使自己满意为止
+
+'''
+
 class Settings:
     """A class to store all settings for Alien Invasion."""
 

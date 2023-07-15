@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 
 import pygame
@@ -19,8 +20,14 @@ class AlienInvasion:
 
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
-        pygame.display.set_caption("Alien Invasion")
+        pygame.display.set_caption("外星入侵地球，强强快来拯救世界吧 :)")
 
+        # 在游戏顶部增加提示
+        font = pygame.font.SysFont('SimHei', 48)  # Change None to 'Arial'
+        self.play_info = font.render("使用方向键控制飞船，按下空格键发射子弹", True, (255, 255, 255))
+        self.play_info_rect = self.play_info.get_rect()
+        self.play_info_rect.centerx = self.screen.get_rect().centerx
+        self.play_info_rect.top = 10
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -146,6 +153,9 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+
+        # 显示游戏顶部的提示信息
+        self.screen.blit(self.play_info, self.play_info_rect)
 
         pygame.display.flip()
 
