@@ -96,6 +96,22 @@ class AlienInvasion:
         # Remove any bullets and aliens that have collided.
         collisions = pygame.sprite.groupcollide(
                 self.bullets, self.aliens, True, True)
+        self.rows=5
+        self.cols=5
+        if collisions:
+            for aliens in collisions.values():
+                for alien in aliens:
+                    # 获取当前碰撞的外星人所在的位置
+                    alien_row = alien.row
+                    alien_col = alien.col
+
+                    # 删除该位置的前后左右四个方向的外星人
+                    for row in range(alien_row - 1, alien_row + 2):
+                        for col in range(alien_col - 1, alien_col + 2):
+                            if row >= 0 and row < self.rows and col >= 0 and col < self.cols:
+                                for alien in self.aliens.sprites():
+                                    if alien.row == row and alien.col == col:
+                                        self.aliens.remove(alien)
 
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
