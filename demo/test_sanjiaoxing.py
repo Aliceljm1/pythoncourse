@@ -127,9 +127,11 @@ def print_hollow_triangle3(n):
         for j in range(n - i - 1):
             print(' ', end='')
 
-        # 如果是第一行和最后一行,直接打印星号
-        # 如果k==0那么说明是第一个星号，打印它，如果k==2*i说明是最后一个星号也打印，否则打印空格，完成三角形除去首位的中间部分星号打印
-        for k in range(2 * i + 1):
+        # 换一个角度思考问题，假如当前有boxs个箱子，每个箱子需要打印星星或者空格， 如果是第一行和最后一行,全部打印星号
+        # 以下k就是箱子的序号， 如果k==0那么说明是第一个星号，打印它，如果k==2*i说明是最后一个星号也打印，否则打印空格，
+        # 完成三角形除去首位的中间部分星号打印
+        boxs=2 * i + 1
+        for k in range(boxs):
             if i == 0 or i == n-1:
                 print('*', end='')
             elif  k == 0 or k == 2 * i:
@@ -154,7 +156,9 @@ def print_hollow_triangle3(n):
 
         #和上一个函数相比，可以化简逻辑，直接写一行判定，前提是虽然两个判定的条件不一样，但是判定成功执行的操作是一样的就可以合并
         for k in range(2 * i + 1):
-            if i == 0 or i == n-1 or k == 0 or k == 2 * i:
+            if i==n-1 and k==2*i:
+                print('$', end='')
+            elif i == 0 or i == n-1 or k == 0 or k == 2 * i:
                 print('*', end='')
             else:
                 print(' ', end='')
@@ -166,3 +170,8 @@ def print_hollow_triangle3(n):
 print_hollow_triangle3(5)
 
 print("--------------------------打印镂空三角形4--------------------------------------")
+
+# 变种题目，要求最后一行的最后一个星星位置打印$符号
+# if i == n - 1 and k == 2 * i:
+#     print('$', end='')
+# elif

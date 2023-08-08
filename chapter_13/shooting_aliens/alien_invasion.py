@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import sys
 
 import pygame
@@ -28,6 +27,7 @@ class AlienInvasion:
         self.play_info_rect = self.play_info.get_rect()
         self.play_info_rect.centerx = self.screen.get_rect().centerx
         self.play_info_rect.top = 10
+
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
@@ -96,22 +96,6 @@ class AlienInvasion:
         # Remove any bullets and aliens that have collided.
         collisions = pygame.sprite.groupcollide(
                 self.bullets, self.aliens, True, True)
-        self.rows=5
-        self.cols=5
-        if collisions:
-            for aliens in collisions.values():
-                for alien in aliens:
-                    # 获取当前碰撞的外星人所在的位置
-                    alien_row = alien.row
-                    alien_col = alien.col
-
-                    # 删除该位置的前后左右四个方向的外星人
-                    for row in range(alien_row - 1, alien_row + 2):
-                        for col in range(alien_col - 1, alien_col + 2):
-                            if row >= 0 and row < self.rows and col >= 0 and col < self.cols:
-                                for alien in self.aliens.sprites():
-                                    if alien.row == row and alien.col == col:
-                                        self.aliens.remove(alien)
 
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
@@ -128,22 +112,22 @@ class AlienInvasion:
         """Create the fleet of aliens."""
         # Create an alien and keep adding aliens until there's no room left.
         # Spacing between aliens is one alien width and one alien height.
-        alien = Alien(self)
+        #1.只显示偶数位置上的外星人，
+        #2.每行显示的外星人逐行递减一个，
+        #3.每行显示的外星人逐行递增一个，此时应该忽略列数，
+        #4.偶数位置显示cool版本外星人，奇数位置显示普通外星人
+        alien = Alien(self,False)
         alien_width, alien_height = alien.rect.size
+        rows=5
+        columns=8
+        for hang in range(rows):
+            for lie in range(columns):
+                    self._create_alien(lie * (2 * alien_width) + alien_width, hang * (2 * alien_height) + alien_height,False)
 
-        current_x, current_y = alien_width, alien_height
-        while current_y < (self.settings.screen_height - 3 * alien_height):
-            while current_x < (self.settings.screen_width - 2 * alien_width):
-                self._create_alien(current_x, current_y)
-                current_x += 2 * alien_width
 
-            # Finished a row; reset x value, and increment y value.
-            current_x = alien_width
-            current_y += 2 * alien_height
-
-    def _create_alien(self, x_position, y_position):
+    def _create_alien(self, x_position, y_position, is_cool=False):
         """Create an alien and place it in the fleet."""
-        new_alien = Alien(self)
+        new_alien = Alien(self,is_cool)
         new_alien.x = x_position
         new_alien.rect.x = x_position
         new_alien.rect.y = y_position
@@ -172,7 +156,6 @@ class AlienInvasion:
 
         # 显示游戏顶部的提示信息
         self.screen.blit(self.play_info, self.play_info_rect)
-
         pygame.display.flip()
 
 
