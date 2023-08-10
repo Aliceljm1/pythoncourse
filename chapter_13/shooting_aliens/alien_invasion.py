@@ -6,6 +6,7 @@ from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from background import Background
 
 
 class AlienInvasion:
@@ -31,7 +32,7 @@ class AlienInvasion:
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
-
+        self.background = Background(ai_game=self)
         self._create_fleet()
 
     def run_game(self):
@@ -108,7 +109,20 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+    #1.打印一行cool外星人，一行普通外星人，以此类推
+    #2.第1，3，5...行第一个外新人是cool, 其余都是普通外星人
     def _create_fleet(self):
+        alien = Alien(self,False)
+        alien_width, alien_height = alien.rect.size
+        rows=5
+        columns=9
+        for hang in range(rows):
+            for lie in range(columns):
+                self._create_alien(lie * (2 * alien_width) + alien_width, hang * (2 * alien_height) + alien_height,False)
+
+
+
+    def _create_fleet_rande(self):
         """Create the fleet of aliens."""
         # Create an alien and keep adding aliens until there's no room left.
         # Spacing between aliens is one alien width and one alien height.
@@ -140,6 +154,7 @@ class AlienInvasion:
                 self._change_fleet_direction()
                 break
 
+    #改变飞船整体移动方向 用边界是否触碰到窗口来的判断方向的改变
     def _change_fleet_direction(self):
         """Drop the entire fleet and change the fleet's direction."""
         for alien in self.aliens.sprites():
@@ -149,6 +164,11 @@ class AlienInvasion:
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
+
+        #绘制背景图片
+        self.background.update()
+        self.background.blitme()
+
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.ship.blitme()
