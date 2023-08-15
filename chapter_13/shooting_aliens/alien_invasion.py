@@ -7,7 +7,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from background import Background
-
+import random
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -33,7 +33,7 @@ class AlienInvasion:
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self.background = Background(ai_game=self)
-        self._create_fleet()
+        self._create_fleet_rande()
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -89,17 +89,37 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
-        self._check_bullet_alien_collisions()
+        self._check_bullet_alien_collisions2()
         
 
     def _check_bullet_alien_collisions(self):
         """Respond to bullet-alien collisions."""
         # Remove any bullets and aliens that have collided.
+        #TODO 修改逻辑，如果子弹击中的是cool外星人，那么需要两发子弹的碰撞，可以在alien.py中增加子弹碰撞的次数，如果击中的是普通外星人，那么就消失
         collisions = pygame.sprite.groupcollide(
                 self.bullets, self.aliens, True, True)
 
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
+            self.bullets.empty()
+            self._create_fleet()
+
+    def _check_bullet_alien_collisions2(self):
+        # Remove any bullets and aliens that have collided.
+        collisions = pygame.sprite.groupcollide(
+                self.bullets, self.aliens, True, False)  # 仅移除子弹，而不移除外星人
+
+        for bullet, aliens in collisions.items():
+            for alien in aliens:
+                if alien.iscool:
+                    alien.hits += 1
+                    if alien.hits >= 2:  # 子弹击中cool外星人两次
+                        self.aliens.remove(alien)
+                else:
+                    self.aliens.remove(alien)  # 普通外星人直接消失
+
+        if not self.aliens:
+            # Destroy existing bullets and create a new fleet.
             self.bullets.empty()
             self._create_fleet()
 
@@ -112,7 +132,7 @@ class AlienInvasion:
     #1.打印一行cool外星人，一行普通外星人，以此类推
     #2.第1，3，5...行第一个外新人是cool, 其余都是普通外星人
     def _create_fleet(self):
-        alien = Alien(self,False)
+        alien = Alien(self,True)
         alien_width, alien_height = alien.rect.size
         rows=5
         columns=9
@@ -136,7 +156,12 @@ class AlienInvasion:
         columns=8
         for hang in range(rows):
             for lie in range(columns):
-                    self._create_alien(lie * (2 * alien_width) + alien_width, hang * (2 * alien_height) + alien_height,False)
+                    # 生成随机整数
+                    random_number = random.randint(1, 100)  # 生成1到100之间的随机整数
+                    iscool=False
+                    if random_number % 2 == 0:
+                        iscool=True
+                    self._create_alien(lie * (2 * alien_width) + alien_width, hang * (2 * alien_height) + alien_height,iscool)
 
 
     def _create_alien(self, x_position, y_position, is_cool=False):

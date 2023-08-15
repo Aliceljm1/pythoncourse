@@ -11,8 +11,11 @@ class Alien(Sprite):
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
-
+        # 新增被子弹击中的次数属性
+        self.hits = 0
+        
         # Load the alien image and set its rect attribute.
+        self.iscool=is_cool
         if is_cool:
             self.image = pygame.image.load('images/cool.bmp')
         else:
