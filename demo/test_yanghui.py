@@ -194,17 +194,13 @@ test.append(3)
 test.append(5)
 
 
-#测试，请请示如下代码
-ar=[]
-for i in range(n):
-    row = []
-    for j in range(i+1):
-        if j==0 or j==i+1-1:
-            row.append(1)
-        else:
-            num=ar[i-1][j-1]+ar[i-1][j]
-            row.append(num)
-    ar.append(row)
+#测试，请补充代码完成杨辉三角
+# ar=[]
+# for i in range(n):
+#     row = []
+#     for j in range():
+#         else:
+#     ar.append(row)
 
 print(ar)
 print("--------------ar-----------------")
